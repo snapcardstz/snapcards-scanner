@@ -793,7 +793,7 @@ body {
 #page-profile .profile-email{order:2;margin:0 auto!important;max-width:100%;overflow-wrap:anywhere;color:rgba(255,255,255,.82)!important;font-size:13px!important}
 
 </style>
-<style id="meshez-app-theme">
+<style id="snap-cards-app-theme">
 :root{
  --indigo-night:#24243A;--indigo:#164F9B;--indigo-mid:#315887;
  --signal-red:#F06A3D;--signal-red-deep:#E92F4D;
@@ -899,7 +899,7 @@ button{transition:background .18s ease,transform .18s ease,box-shadow .18s ease}
         <input type="password" id="auth-pass" placeholder="••••••••" autocomplete="current-password">
         <button class="password-toggle" type="button" onclick="toggleScannerPassword()" aria-label="Onyesha au ficha nenosiri"><i data-lucide="eye" id="scanner-password-eye"></i></button>
       </div>
-      <div class="scanner-forgot"><a href="https://ezekielmeshack136-max.github.io/meshez-kadi-app/" data-i18n="Umesahau neno siri?">Umesahau neno siri?</a></div>
+      <div class="scanner-forgot"><a href="https://snapcardstz.github.io/snapcards/" data-i18n="Umesahau neno siri?">Umesahau neno siri?</a></div>
     </div>
     <button class="btn-login" onclick="login()"><i data-lucide="log-in"></i> <span data-i18n="Ingia">Ingia</span></button>
     <div class="auth-error" id="auth-error"></div>
@@ -1340,7 +1340,7 @@ async function installApp() {
 // ===== SHARE SCANNER LINK =====
 // Inasaidia kutuma link ya scanner kwa watu wapya (mfano ma-scanner/walinzi)
 // bila kuhitaji kuunda account mpya - watatumia email/password waliopewa na admin.
-const SCANNER_APP_LINK = 'https://ezekielmeshack136-max.github.io/meshez-kadi-scanner/';
+const SCANNER_APP_LINK = 'https://snapcardstz.github.io/snapcards-scanner/';
 
 async function shareScannerLink() {
   const message = `Karibu kwenye Snap Cards! Tumia link hii kufungua scanner. Ingia kwa email na password ulizopewa: ${SCANNER_APP_LINK}`;
@@ -2032,29 +2032,6 @@ async function refreshAll() {
 }
 </script>
 
-// ===== SNAP CARDS AUTH / LEGACY BRAND CLEANUP =====
-(function removeLegacyScannerUI() {
-  const clean = () => {
-    const auth = document.getElementById('auth-screen');
-    if (auth) {
-      auth.querySelectorAll('button, a, [role="button"]').forEach(el => {
-        if (el.classList.contains('btn-login') || el.classList.contains('password-toggle') || el.classList.contains('scanner-forgot')) return;
-        const label = (el.innerText || el.textContent || '').replace(/\\s+/g, ' ').trim().toLowerCase();
-        if (label === 'sign in' || label === 'ingia') el.remove();
-      });
-    }
-    document.querySelectorAll('body *').forEach(el => {
-      if (el.children.length) return;
-      const value = (el.textContent || '').replace(/\\s+/g, ' ').trim();
-      if (/Akaunti za Meshez Kadi hutengenezwa na Owner kupitia User Management\\.?/i.test(value)) el.remove();
-    });
-  };
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', clean, { once: true });
-  else clean();
-  const observer = new MutationObserver(clean);
-  observer.observe(document.documentElement, { childList: true, subtree: true });
-  window.setTimeout(() => observer.disconnect(), 10000);
-})();
 
 </body>
 </html>
