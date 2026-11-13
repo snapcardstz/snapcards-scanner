@@ -1277,8 +1277,26 @@ let qrScanner   = null;
 
 // Inapata role ya mtumiaji (admin/manager/scanner) kutoka jedwali la profiles
 async function loadMyProfile() {
-  const { data, error } = await db.from('profiles').select('*').eq('id', currentUser.id).single();
-  if (error) { console.error('Imeshindwa kupata profile:', error); return; }
+  // Ondoa profile ya session iliyopita kabla ya kusoma taarifa za aliyeingia sasa.
+  currentProfile = null;
+  if (!currentUser?.id) return;
+
+  const { data, error } = await db
+    .from('profiles')
+    .select('id, first_name, last_name, email, phone, role, is_owner')
+    .eq('id', currentUser.id)
+    .single();
+
+  if (error || !data) {
+    console.error('Imeshindwa kupata profile ya mtumiaji huyu:', error);
+    return;
+  }
+
+  // Hakikisha profile inayotumika ni ya ID ileile iliyoingia.
+  if (data.id !== currentUser.id) {
+    console.error('Profile ID haifanani na akaunti iliyoingia.');
+    return;
+  }
   currentProfile = data;
 }
 
@@ -1593,8 +1611,9 @@ function updateScannerProfileCard() {
   const firstName = String(currentProfile?.first_name || '').trim();
   const lastName = String(currentProfile?.last_name || '').trim();
   const profileFullName = [firstName,lastName].filter(Boolean).join(' ').trim();
-  const metadataName = String(currentUser?.user_metadata?.full_name || '').trim();
-  const fullName = profileFullName || metadataName || 'User';
+  // Jina la Scanner litoke kwenye profiles kama Main App; metadata ya zamani
+  // isitumike kwa sababu inaweza kuonyesha jina la awali la mtumiaji.
+  const fullName = profileFullName || 'Jina halijapatikana';
   const email = String(currentProfile?.email || currentUser?.email || '').trim();
   const avatar = document.getElementById('pwa-avatar');
   const nameEl = document.getElementById('pwa-name');
